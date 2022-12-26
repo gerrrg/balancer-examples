@@ -58,9 +58,7 @@ contract FlashLoanRecipient is IFlashLoanRecipient {
         uint256[] memory feeAmounts
     ) internal { 
         for (uint256 i = 0; i < tokens.length; ++i) {
-            IERC20 token = tokens[i];
-            uint256 amount = amounts[i] + feeAmounts[i];
-            token.transfer(address(VAULT), amount);
+            IERC20(tokens[i]).transfer(address(VAULT), amounts[i] + feeAmounts[i]);
         }
     }
 }
