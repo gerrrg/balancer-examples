@@ -1,7 +1,7 @@
 import { ethers } from 'hardhat';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
-import { Contract, ContractReceipt, ContractTransaction } from '@ethersproject/contracts';
+import { Contract, ContractReceipt, ContractTransaction, ContractFactory } from '@ethersproject/contracts';
 import { Vault } from '@balancer-labs/typechain';
 import { Dictionary, fromPairs } from 'lodash';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/dist/src/signer-with-address';
@@ -107,7 +107,7 @@ export async function deploySortedTokens(
 export async function deployWETH(from?: SignerWithAddress): Promise<Contract> {
   const [defaultDeployer] = await ethers.getSigners();
   const deployer = from || defaultDeployer;
-  const factory = new ethers.ContractFactory(TestWETHArtifact.abi, TestWETHArtifact.bytecode, deployer);
+  const factory = new ContractFactory(TestWETHArtifact.abi, TestWETHArtifact.bytecode, deployer);
   const instance = await factory.deploy(deployer.address);
   return instance;
 }
@@ -115,7 +115,7 @@ export async function deployWETH(from?: SignerWithAddress): Promise<Contract> {
 export async function deployToken(symbol: string, decimals?: number, from?: SignerWithAddress): Promise<Contract> {
   const [defaultDeployer] = await ethers.getSigners();
   const deployer = from || defaultDeployer;
-  const factory = new ethers.ContractFactory(TestTokenArtifact.abi, TestTokenArtifact.bytecode, deployer);
+  const factory = new ContractFactory(TestTokenArtifact.abi, TestTokenArtifact.bytecode, deployer);
   const instance = await factory.deploy(deployer.address, symbol, symbol, decimals);
   return instance;
 }
