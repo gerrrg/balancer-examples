@@ -24,11 +24,24 @@ contract FlashLoanRecipient is IFlashLoanRecipient {
         VAULT = vault;
     }
 
+    // Silly test function
+    function borrowAll(IERC20[] memory tokens) external {
+        address vault = address(VAULT);
+        uint256[] memory amounts = new uint256[](tokens.length);
+        bytes memory emptyUserData;
+
+        for(uint256 i = 0; i < tokens.length; i++) {
+            amounts[i] = tokens[i].balanceOf(vault);
+        }
+
+        makeFlashLoan(tokens, amounts, emptyUserData);
+    }
+
     function makeFlashLoan(
         IERC20[] memory tokens,
         uint256[] memory amounts,
         bytes memory userData
-    ) external {
+    ) public {
       VAULT.flashLoan(this, tokens, amounts, userData);
     }
 
@@ -40,12 +53,12 @@ contract FlashLoanRecipient is IFlashLoanRecipient {
     ) external override {
         // Note: this check is crucial. If you do not validate that the Vault is calling this function,
         // a malicious address can directly steal your tokens.
-        require(IVault(msg.sender) == VAULT);
+        require(IVault(msg.sender) == VAULT, "Only Vault can call");
         
         // Uncomment and decode userData if you want to use it for something
         // uint256 arg = userData.decode();
 
-        // do something
+        // do something that doesn't lose money
         // ...
 
         // repay loan to the Vault
